@@ -1,12 +1,20 @@
 <template>
   <div id="app">
+    <!-- <div class="page" v-if="getSpinner">
+      <b-spinner class="spinner" variant="primary" key="primary"></b-spinner>
+    </div> -->
     <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <!-- <top-header></top-header> -->
+      <!-- <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link> -->
     </nav>
     <router-view />
   </div>
 </template>
+
+<script>
+export default {};
+</script>
 
 <style lang="scss">
 #app {
@@ -28,5 +36,18 @@ nav {
       color: #42b983;
     }
   }
+}
+
+.page {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 25;
+  width: 100%;
+  height: 100%;
+}
+
+.spinner {
+  position: relative;
+  top: 50%;
 }
 </style>

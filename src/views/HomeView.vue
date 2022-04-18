@@ -1,46 +1,31 @@
 <template>
-  <b-container>
-    <div>
-      <b-table striped hover :items="items"></b-table>
-    </div>
-  </b-container>
+  <div class="home">
+    <b-container>
+      <b-row align-v="center"
+        ><user-table
+          :endpoint="url"
+          :search="true"
+          :sorting="true"
+          :pagination="true"
+          :providedFields="fields"
+        ></user-table
+      ></b-row>
+    </b-container>
+  </div>
 </template>
 
 <script>
-// @ is an alias to /src
+import UserTable from "@/components/UserTable.vue";
 
 export default {
   name: "HomeView",
-  components: {},
+  components: {
+    "user-table": UserTable,
+  },
   data() {
     return {
-      // Note 'isActive' is left out and will not appear in the rendered table
-      fields: [
-        {
-          key: "last_name",
-          sortable: true,
-        },
-        {
-          key: "first_name",
-          sortable: false,
-        },
-        {
-          key: "age",
-          label: "Person age",
-          sortable: true,
-        },
-      ],
-      items: [
-        {
-          isActive: true,
-          age: 40,
-          first_name: "Dickerson",
-          last_name: "Macdonald",
-        },
-        { isActive: false, age: 21, first_name: "Larsen", last_name: "Shaw" },
-        { isActive: false, age: 89, first_name: "Geneva", last_name: "Wilson" },
-        { isActive: true, age: 38, first_name: "Jami", last_name: "Carney" },
-      ],
+      url: "https://jsonplaceholder.typicode.com/users",
+      fields: ["name", "email", "company.name", "address.city", "website"],
     };
   },
 };
