@@ -1,16 +1,13 @@
 <template>
-  <div class="home">
-    <b-container>
-      <b-row align-v="center"
-        ><user-table
-          :endpoint="url"
-          :search="true"
-          :sorting="true"
-          :pagination="true"
-          :providedFields="fields"
-        ></user-table
-      ></b-row>
-    </b-container>
+  <div class="home my-4">
+    <user-table
+      :endpoint="url"
+      :search="true"
+      :sorting="true"
+      :pagination="true"
+      :providedFields="fields"
+      @change="logChange"
+    ></user-table>
   </div>
 </template>
 
@@ -28,5 +25,16 @@ export default {
       fields: ["name", "email", "company.name", "address.city", "website"],
     };
   },
+  methods: {
+    logChange(event) {
+      console.log(event);
+    },
+  },
 };
 </script>
+
+<style scoped>
+.home {
+  max-width: 100%;
+}
+</style>

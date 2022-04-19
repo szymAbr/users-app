@@ -1,56 +1,56 @@
 <template>
-  <div>
-    <b-navbar toggleable="lg" type="dark" variant="dark">
-      <b-navbar-brand href="#">Users</b-navbar-brand>
+  <div class="user-table py-4">
+    <div class="page" v-if="showSpinner">
+      <b-spinner class="spinner" variant="primary" key="primary"></b-spinner>
+    </div>
 
-      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+    <b-container
+      ><b-navbar type="dark" variant="dark">
+        <b-navbar-brand href="#">Users</b-navbar-brand>
 
-      <b-collapse id="nav-collapse" is-nav>
-        <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
           <b-nav-form @submit.prevent="searchUsers">
             <b-form-input
               size="sm"
               class="mr-sm-2"
-              placeholder="Search"
+              placeholder="Search by name"
               v-model="searchText"
             ></b-form-input>
+
             <b-button size="sm" class="my-2 my-sm-0" type="submit"
               >Search</b-button
             >
           </b-nav-form>
         </b-navbar-nav>
-      </b-collapse>
-    </b-navbar>
+      </b-navbar>
 
-    <!-- <b-form-input
-      v-model="filter"
-      type="search"
-      placeholder="Type to filter data"
-    ></b-form-input> -->
+      <b-table
+        striped
+        hover
+        caption-top
+        stacked="md"
+        :fields="fields"
+        :items="displayedUsers"
+        :per-page="perPage"
+        :current-page="currentPage"
+        @change="$emit('change', displayedUsers)"
+      >
+        <template #cell(email)="data">
+          <a :href="`mailto:${data.value}`">{{ data.value }}</a>
+        </template>
+      </b-table>
 
-    <b-table
-      striped
-      hover
-      :fields="fields"
-      :items="displayedUsers"
-      :per-page="perPage"
-      :current-page="currentPage"
-    >
-      <template #cell(email)="data">
-        <a :href="`mailto:${data.value}`">{{ data.value }}</a>
-      </template>
-    </b-table>
-
-    <b-pagination
-      v-model="currentPage"
-      :total-rows="rows"
-      :per-page="perPage"
-      first-text="First"
-      prev-text="Prev"
-      next-text="Next"
-      last-text="Last"
-    ></b-pagination>
+      <b-pagination
+        v-model="currentPage"
+        :total-rows="rows"
+        :per-page="perPage"
+        first-text="First"
+        prev-text="Prev"
+        next-text="Next"
+        last-text="Last"
+        @change="$emit('change', displayedUsers)"
+      ></b-pagination
+    ></b-container>
   </div>
 </template>
 
@@ -63,44 +63,16 @@ export default {
   data() {
     return {
       currentPage: 1,
-      // perPage: 3,
       users: [],
       displayedUsers: [],
       searchText: "",
-      // fields: [
-      //   {
-      //     key: "name",
-      //     search: this.search,
-      //     sortable: this.sorting,
-      //   },
-      //   {
-      //     key: "email",
-      //     search: this.search,
-      //     sortable: this.sorting,
-      //     formatter: "emailLink",
-      //   },
-      //   {
-      //     key: "company.name",
-      //     label: "Company",
-      //     search: this.search,
-      //     sortable: this.sorting,
-      //   },
-      //   {
-      //     key: "address.city",
-      //     label: "City",
-      //     search: this.search,
-      //     sortable: this.sorting,
-      //   },
-      //   {
-      //     key: "website",
-      //     search: this.search,
-      //     sortable: this.sorting,
-      //   },
-      // ],
+      showSpinner: false,
     };
   },
   methods: {
     fetchData() {
+      this.showSpinner = true;
+
       axios
         .get(this.endpoint)
         .then((response) => {
@@ -112,6 +84,7 @@ export default {
         })
         .finally(() => {
           console.log("data fetch complete");
+          this.showSpinner = false;
         });
     },
     paginate(currentPage, perPage) {
@@ -120,10 +93,6 @@ export default {
       this.displayedUsers = newUsers;
     },
     searchUsers() {
-      // this.providedFields.forEach(field => {
-      //   user.field.toLowerCase().includes(this.searchText.toLowerCase())
-      // })
-
       const filteredUsers = this.users.filter((user) =>
         user.name.toLowerCase().includes(this.searchText.toLowerCase())
       );
@@ -183,4 +152,21 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.user-table {
+  max-width: 100%;
+}
+
+.page {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 25;
+  width: 100%;
+  height: 100%;
+}
+
+.spinner {
+  position: relative;
+  top: 50%;
+}
+</style>
